@@ -1,0 +1,3 @@
+// public key only for test
+export const publicKeyExternalSite =
+  '-----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6z/iXAC4j9iRPcgxJaiPNj4yKAkcCwNBdfasxW8FBWzbbqkXGDBzxgQMs0srZsNUKqSox3SKlOAf4wkRpuzI1ylv+ua2/Y62AZLj5wKx1TcJZRs1hGDBjxs5A9b7Fzl8fUWjWZZT8juzI/9hMPksw4lflgGDLgZr0T4NRaSHR5pdzvxgeZf131qgNxdYOmP2Ks4FYEhpKMAFhYOoXjsAiZoz7R82wpDVrwskk89CjL76VUr8F9nKEiyVzGdZ9DFoXfC+l3HQvPcGA4V7VmbTf6Hb++GmAeplFVqxvc64QIGeHCG9An//DyPn6ItQN9/Jaq0QeJ7j7MFb9trPYz3s7wIDAQAB-----END PUBLIC KEY-----';
