@@ -4,12 +4,18 @@ import { WebSiteDataType } from 'types/webSite';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { WebSite } from '../schemas/WebSite.schema';
+import { Nonce } from '../schemas/Nonce.schema';
+import { User } from '../schemas/User.schema';
 
 @Injectable()
 class DatabaseMongoose implements databaseInterface {
   constructor(
     @InjectModel('WebSite')
     private readonly WebSiteModel: Model<WebSite>,
+    @InjectModel('Nonce')
+    private readonly NonceModel: Model<Nonce>,
+    @InjectModel('User')
+    private readonly UserModel: Model<User>,
   ) {}
 
   public async createWebSite(webSiteData: WebSiteDataType, authKey: string) {
@@ -20,6 +26,20 @@ class DatabaseMongoose implements databaseInterface {
       createdAt,
     });
     await webSite.save();
+  }
+
+  public async checkIfNonceAlreadyExist(nonce: string, timestamp: number) {
+    try {
+      return await this.NonceModel.findOne({
+        nonce,
+        timestamp,
+      }).exec();
+    } catch (err) {
+      if (err instanceof Error) {
+        throw new Error('Une erreur est survenue : ' + err.message);
+      }
+      throw new Error('Une erreur est survenue');
+    }
   }
   /*
     public async generateNewCode(codeUuid: string, code: number, endOfValidityOfCode: number){
