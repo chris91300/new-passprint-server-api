@@ -18,7 +18,7 @@ export const checkDnsToken = async (
     return allRecords.includes(expectedToken);
   } catch (err) {
     if (err.code === 'ENOTFOUND') {
-      throw new Error('hostname nt found');
+      throw new Error('hostname not found');
     }
 
     throw new Error('Erreur lors de la résolution DNS');

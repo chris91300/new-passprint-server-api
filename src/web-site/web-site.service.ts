@@ -10,7 +10,10 @@ export class WebSiteService {
   constructor(
     @Inject(DATABASE_PROVIDER)
     private readonly database: databaseInterface,
-  ) {}
+    private readonly passprintPublicKey: string,
+  ) {
+    this.passprintPublicKey = ownPublicKey;
+  }
 
   async create(data: WebSiteDataType) {
     const authKey = generateAuthKey();
@@ -18,7 +21,7 @@ export class WebSiteService {
     return {
       success: true,
       authKey,
-      publickey: ownPublicKey,
+      publickey: this.passprintPublicKey,
     };
   }
 }

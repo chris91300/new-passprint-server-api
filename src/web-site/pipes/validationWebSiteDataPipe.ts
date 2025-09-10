@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
 import { ZodError, ZodType } from 'zod';
+import { WebSiteDatabaseType } from '../dto/create-web-site.dto';
 
 const getZodErrorMessages = (error: ZodError) => {
   //const paramsError: string[] = [];
@@ -10,7 +11,7 @@ const getZodErrorMessages = (error: ZodError) => {
 export class validationWebSitedataPipe implements PipeTransform {
   constructor(private schema: ZodType) {}
 
-  transform(value: any) {
+  transform(value: WebSiteDatabaseType) {
     try {
       this.schema.parse(value);
       return value;
@@ -26,7 +27,10 @@ export class validationWebSitedataPipe implements PipeTransform {
 
         throw new BadRequestException(errorToReturn);
       }
-      throw new BadRequestException('Validation failed', error.errors);
+      if (error instanceof Error) {
+        throw new BadRequestException('Validation failed', error.message);
+      }
+      throw new BadRequestException('Validation failed', 'Erreur inconnue');
     }
   }
 }
