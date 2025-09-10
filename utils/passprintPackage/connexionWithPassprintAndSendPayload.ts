@@ -1,11 +1,4 @@
 import WebSocket from 'ws';
-import {
-  ResponseFromPassprintDecryptedType,
-  ResponseFromPassprintType,
-} from './types';
-import { getPrivateKey } from './getPrivateKey';
-import { decryptDataWithPrivateKey } from './decryptDataWithPrivateKey';
-import { checkPassprintSignature } from './checkPassprintSignature';
 
 export async function connexionWithPassprintAndSendPayload(
   payload: string,

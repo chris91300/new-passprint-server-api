@@ -1,3 +1,4 @@
+import { dataForRequestSchema } from 'utils/passprintPackage/types';
 import { z } from 'zod';
 
 /**
@@ -68,3 +69,11 @@ export const webSiteDatabaseSchema = webSiteDataSchema.extend({
 });
 
 export type WebSiteDatabaseType = z.infer<typeof webSiteDatabaseSchema>;
+
+export const webSiteRequestSchema = dataForRequestSchema.extend({
+  timestamp: z.number('Invalid timestamp'),
+  nonce: z.string('Invalid nonce'),
+  signature: z.string('Invalid signature'),
+});
+
+export type WebSiteRequestType = z.infer<typeof webSiteRequestSchema>;
