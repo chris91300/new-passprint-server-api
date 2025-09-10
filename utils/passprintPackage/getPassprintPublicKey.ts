@@ -1,5 +1,6 @@
-export const scriptToGeneratePublicKey =
-  'openssl rsa -pubout -in private_key.pem -out public_key.pem';
-
-export const ownPublicKey =
+const passprintPublicKey =
   '-----BEGIN RSA PUBLIC KEY-----MIICCgKCAgEAxuBMYXoYnLK6zJhHd98JESUPQjp7fivQrzJKS2zUg38KsgLmxy8WlHkv8LJJ9Fsr3p/FPlleSBhsseP6Fr73WN0LrJ28La4kNZiZUk9AVqmezs2peHc9Fde09QOyU3v9GFCmbexW9xr14+j8WkX2RI6AkeKC5+Hl20SDW0kdJc5YCO7MuovuC9+y/SDjagDeZcUeKiTCV6qFRJy4iMamYNq7Oriv1uUPlWMcuLq/UQbH3EdyOPQy6lrjC2JDPp6fOCB0VEHK1ElOrr3gvkb7v0/DGdXJsWkMpr4yL+VypA4tl3MrNdos1EjJr9ehA67CO0BXVNarvl7HJwK3fS/qwVF7RLLpo/87rlFZTs8aawvbXrgP2H2L6ZW0h6UA4YC7RATgZolN2L1aS8tb94DiK4MSIDR3TwoEKeO4YQoxUACq2qQ3/lUyt4K7VXdWLTK0gFPsol5bfrdEnrNVysffXYWzTd53FnA7vzQaadiChktIWRCKjr8FXwBqqPKDudLivHGjXodgLLHyN2adpQm70tSet6RjldhuJnIqvtVztzromXrr6nL9B/V3ATQDPL7behaXIi6o8tCfE2xurlYeunDDtPcH6W96VxdIPPoV87mVhxqi5gXIFc2ddCIxHqdu86lxej1aM6zmhpKeV0jah1orOvp75aCZymbuxI9pnycCAwEAAQ==-----END RSA PUBLIC KEY-----';
+
+export function getPassprintPublicKey() {
+  return passprintPublicKey;
+}

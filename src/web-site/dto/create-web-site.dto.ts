@@ -34,10 +34,10 @@ const contactEmail = z.email('Invalid email address');
 const publicKey = z.string().regex(publicKeyRegex, {
   message: 'Format de clé publique invalide (doit être au format PEM)',
 });
-
+/*
 const ipv4 = z.ipv4('Invalid ipv4 address');
 
-const ipv6 = z.ipv6('Invalid ipv6 address');
+const ipv6 = z.ipv6('Invalid ipv6 address');*/
 
 const authKey = z.uuid('Invalid authentification key');
 

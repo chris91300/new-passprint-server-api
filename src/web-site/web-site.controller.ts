@@ -1,4 +1,4 @@
-import { Body, Controller, Ip, Post, UsePipes } from '@nestjs/common';
+import { Body, Controller, Ip, Post } from '@nestjs/common';
 import { WebSiteService } from './web-site.service';
 import { validationWebSitedataPipe } from './pipes/validationWebSiteDataPipe';
 import {
@@ -36,5 +36,12 @@ export class WebSiteController {
         return { success: false, message: 'Une erreur est survenue.' };
       }
     }
+  }
+
+  @Post('server')
+  request(@Ip() ip: string, @Body() body: string) {
+    console.log('ip : ', ip);
+    console.log('body : ', body);
+    return 'ok';
   }
 }
