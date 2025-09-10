@@ -5,6 +5,11 @@ import {
   webSiteDataSchema,
   type WebSiteDataType,
 } from './dto/create-web-site.dto';
+import {
+  requestWebSiteDtoSchema,
+  type RequestWebSiteDtoType,
+} from './dto/request-web-site.dto';
+import { validationWebSiteRequestPipe } from './pipes/validationWebSiteRequestPipe';
 
 @Controller('web-site')
 export class WebSiteController {
@@ -39,9 +44,20 @@ export class WebSiteController {
   }
 
   @Post('server')
-  request(@Ip() ip: string, @Body() body: string) {
+  request(
+    @Ip() ip: string,
+    @Body(new validationWebSiteRequestPipe(requestWebSiteDtoSchema))
+    body: RequestWebSiteDtoType,
+  ) {
     console.log('ip : ', ip);
     console.log('body : ', body);
-    return 'ok';
+    try {
+      return 'ok';
+    } catch (err) {
+      if (err instanceof Error) {
+        return err.message;
+      }
+      return 'une erreur est survenue';
+    }
   }
 }
