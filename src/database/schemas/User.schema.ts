@@ -63,6 +63,9 @@ export class WebSite {
   @Prop({ required: true })
   publicKey: string;
 
+  @Prop({ require: true })
+  userPseudo: string;
+
   @Prop({ required: true })
   passwordCrypted: string;
 

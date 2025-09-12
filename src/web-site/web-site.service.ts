@@ -9,9 +9,9 @@ import {
 } from 'types/webSite';
 import { generateAuthKey } from 'utils/generateAuthKey';
 import { nonceIsOverwhelmed } from 'utils/nonceIsStillValid';
-import { checkSignature } from 'utils/passprintPackage/checkSignature';
-import { decryptDataWithPrivateKey } from 'utils/passprintPackage/decryptDataWithPrivateKey';
-import { getPrivateKey } from 'utils/passprintPackage/getPrivateKey';
+import { checkSignature } from 'utils/passprintPackage/backend/checkSignature';
+import { decryptDataWithPrivateKey } from 'utils/passprintPackage/backend/decryptDataWithPrivateKey';
+import { getPrivateKey } from 'utils/passprintPackage/backend/getPrivateKey';
 
 @Injectable()
 export class WebSiteService {
