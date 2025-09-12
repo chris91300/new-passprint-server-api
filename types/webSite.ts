@@ -1,4 +1,4 @@
-import { dataForRequestSchema } from 'utils/passprintPackage/types';
+import { dataForRequestSchema } from 'utils/passprintPackage/backend/types';
 import { z } from 'zod';
 
 /**

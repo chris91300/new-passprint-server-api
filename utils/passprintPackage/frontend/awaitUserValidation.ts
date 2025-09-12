@@ -1,11 +1,12 @@
 import WebSocket from 'ws';
 
-export async function connexionWithPassprintAndSendPayload(
-  payload: string,
+export async function awaitUserValidation(
+  url: string,
+  eventID: string,
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     // 3. Établir la connexion WebSocket sécurisée
-    const ws = new WebSocket('wss://api.passprint.com/ws');
+    const ws = new WebSocket('wss://' + url);
 
     // Mettre en place un timeout pour éviter une attente infinie
     const timeout = setTimeout(() => {
@@ -22,7 +23,7 @@ export async function connexionWithPassprintAndSendPayload(
 
     ws.onopen = () => {
       // 4. Envoyer le payload signé
-      ws.send(payload);
+      ws.send(eventID);
     };
 
     ws.onmessage = async (event) => {
