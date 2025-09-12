@@ -33,7 +33,7 @@ export class WebSiteService {
     };
   }
 
-  async requestFromWebSiteToUser(request: string) {
+  async checkRequestFromWebSite(request: string) {
     try {
       //  récupération de la clé privé
       const passprintPrivateKey = await getPrivateKey();
@@ -106,6 +106,14 @@ export class WebSiteService {
       }
 
       // enregistrer request dans event database
+
+      const eventID = await this.database.createEvent(payloadWithoutSignature);
+
+      return {
+        success: true,
+        message: 'awaiting user validation',
+        eventID: eventID,
+      };
 
       //  si tout est ok alors on averti user avec notification. sinon on attend qu'il ouvre son appli
     } catch (err) {
