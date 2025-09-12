@@ -2,8 +2,14 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ownPublicKey } from 'configurations/ownPublicKey';
 import { DATABASE_PROVIDER } from 'src/database/database.provider';
 import { type databaseInterface } from 'src/database/interfaces/database.interface';
-import { WebSiteDataType, webSiteRequestSchema } from 'types/webSite';
+import {
+  WebSiteDataType,
+  webSiteRequestSchema,
+  WebSiteRequestType,
+} from 'types/webSite';
 import { generateAuthKey } from 'utils/generateAuthKey';
+import { nonceIsOverwhelmed } from 'utils/nonceIsStillValid';
+import { checkSignature } from 'utils/passprintPackage/checkSignature';
 import { decryptDataWithPrivateKey } from 'utils/passprintPackage/decryptDataWithPrivateKey';
 import { getPrivateKey } from 'utils/passprintPackage/getPrivateKey';
 
@@ -32,20 +38,72 @@ export class WebSiteService {
       //  récupération de la clé privé
       const passprintPrivateKey = await getPrivateKey();
       // déchiffrement de la request
-      const requestDecrypted = await decryptDataWithPrivateKey(
-        request,
-        passprintPrivateKey,
-      );
+      const requestDecrypted =
+        await decryptDataWithPrivateKey<WebSiteRequestType>(
+          request,
+          passprintPrivateKey,
+        );
       //  vérification des données du payload déchiffré
       webSiteRequestSchema.parse(requestDecrypted);
 
       //  vérification du nonce et timestamp
+      const nonceDocument = await this.database.checkIfNonceAlreadyExist(
+        requestDecrypted.nonce,
+        requestDecrypted.timestamp,
+      );
+      if (!nonceDocument) {
+        throw new Error('nonce already use');
+      }
+
+      if (nonceIsOverwhelmed(nonceDocument)) {
+        await this.database.removeNonce(
+          requestDecrypted.nonce,
+          requestDecrypted.timestamp,
+        );
+        throw new Error('nonce is overwhelmed');
+      }
+
+      await this.database.saveNonce(
+        requestDecrypted.nonce,
+        requestDecrypted.timestamp,
+      );
 
       //  récupérer clé public du site avec hostname et authKey
+      const webSite = await this.database.getWebSite(
+        requestDecrypted.hostname,
+        requestDecrypted.authKey,
+      );
+
+      const { signature, ...payloadWithoutSignature } = requestDecrypted;
 
       // vérifier la signature avec la clé public et les données récupérer
+      const isSignatureValid = checkSignature(
+        signature,
+        webSite.publicKey,
+        JSON.stringify(payloadWithoutSignature),
+      );
+
+      if (!isSignatureValid) {
+        throw new Error('signature is not valid');
+      }
 
       //  vérifier que l'utilisateur n'a pas bloqué le site
+      const user = await this.database.getUser(requestDecrypted.pseudo);
+      if (user.accountBlocked) {
+        throw new Error('user is blocked');
+      }
+
+      const currentWebSite = user.webSites.get(requestDecrypted.authKey);
+
+      if (!currentWebSite) {
+        throw new Error(
+          `Your website is not associated with user ${requestDecrypted.pseudo}`,
+        );
+      }
+
+      if (currentWebSite.isSiteBlocked) {
+        throw new Error('user has blocked this hostname');
+      }
 
       // enregistrer request dans event database
 
