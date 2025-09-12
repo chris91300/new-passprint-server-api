@@ -1,8 +1,6 @@
 import { HydratedDocument } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-export type UserDocument = HydratedDocument<User>;
-
 /**
  * USER DATABASE
 
@@ -26,6 +24,64 @@ dataAskedBySite: [nom, prénom ...]
 accountBloked: boolean  
 
  */
+
+@Schema({ _id: false })
+export class UserInformations {
+  @Prop({ require: true })
+  firstName: string;
+
+  @Prop({ require: true })
+  lastName: string;
+
+  @Prop({ require: true })
+  email: string;
+
+  @Prop({ require: true })
+  phone: string;
+
+  @Prop({ require: true })
+  address: string;
+
+  @Prop({ require: true })
+  city: string;
+
+  @Prop({ require: true })
+  postalCode: string;
+
+  @Prop({ require: true })
+  country: string;
+
+  @Prop({ require: true })
+  dateOfBirthday: Date;
+}
+
+@Schema({ _id: false }) // Important pour les sous-documents
+export class WebSite {
+  @Prop({ required: true })
+  hostname: string;
+
+  @Prop({ required: true })
+  publicKey: string;
+
+  @Prop({ required: true })
+  passwordCrypted: string;
+
+  @Prop({ default: Date.now })
+  inscriptionDate: Date;
+
+  @Prop()
+  lastRequestDate: Date;
+
+  @Prop({ default: false })
+  isSiteBlocked: boolean;
+
+  @Prop({ require: false })
+  passwordModifiedAt: Date;
+
+  @Prop({ require: true })
+  dataAskedBySite: keyof UserInformations[];
+}
+
 @Schema()
 export class User {
   @Prop({ required: true })
@@ -38,10 +94,10 @@ export class User {
   phoneAuthKey: string;
 
   @Prop({ required: true })
-  informations: object;
+  informations: UserInformations;
 
-  @Prop({ required: true })
-  passwords: object;
+  @Prop({ required: true, type: Map, of: WebSite })
+  webSites: Map<string, WebSite>;
 
   @Prop({ required: true, default: false })
   accountBlocked: boolean;
@@ -49,11 +105,15 @@ export class User {
   @Prop({ default: false })
   useTemporaryPseudo: boolean;
 
-  @Prop({ required: true, default: '' })
+  @Prop()
+  temporaryPseudoExpireAt: number;
+
+  @Prop({ required: true }) // mettre lors de la création la valeur pseudo
   temporaryPseudo: string;
 
   @Prop()
   temporarySwitchKey: string;
 }
 
+export type UserDocument = HydratedDocument<User>;
 export const UserSchema = SchemaFactory.createForClass(User);

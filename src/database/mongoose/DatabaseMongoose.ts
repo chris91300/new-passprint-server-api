@@ -10,11 +10,11 @@ import { User } from '../schemas/User.schema';
 @Injectable()
 class DatabaseMongoose implements databaseInterface {
   constructor(
-    @InjectModel('WebSite')
+    @InjectModel(WebSite.name)
     private readonly WebSiteModel: Model<WebSite>,
-    @InjectModel('Nonce')
+    @InjectModel(Nonce.name)
     private readonly NonceModel: Model<Nonce>,
-    @InjectModel('User')
+    @InjectModel(User.name)
     private readonly UserModel: Model<User>,
   ) {}
 
@@ -26,6 +26,25 @@ class DatabaseMongoose implements databaseInterface {
       createdAt,
     });
     await webSite.save();
+  }
+
+  public async getWebSite(hostname: string, authKey: string) {
+    try {
+      const webSite = await this.WebSiteModel.findOne({
+        hostname,
+        authKey,
+      });
+      if (webSite) {
+        return webSite;
+      } else {
+        throw new Error('WebSite not found');
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        throw new Error('An error occurred when getWebSite: ' + err.message);
+      }
+      throw new Error('An unknown error occurred when getWebSite');
+    }
   }
 
   public async checkIfNonceAlreadyExist(nonce: string, timestamp: number) {
@@ -41,99 +60,39 @@ class DatabaseMongoose implements databaseInterface {
       throw new Error('Une erreur est survenue');
     }
   }
-  /*
-    public async generateNewCode(codeUuid: string, code: number, endOfValidityOfCode: number){
-        
-        await EmailCode.updateOne({uuid: codeUuid}, {value: code, endOfValidity: endOfValidityOfCode});
-        const codeInformations =  await EmailCode.findOne<CodeInformations>({ uuid: codeUuid });
 
-        if(codeInformations){
-            return codeInformations;
-        }else{
-            throw new Error("une erreur est survenue lors de la génération du nouveau code")
-        }
-        
+  public async saveNonce(nonce: string, timestamp: number) {
+    const nonceDocument = new this.NonceModel({
+      nonce,
+      timestamp,
+    });
+    await nonceDocument.save();
+  }
+
+  public async removeNonce(nonce: string, timestamp: number) {
+    await this.NonceModel.deleteOne({
+      nonce,
+      timestamp,
+    });
+  }
+
+  public async getUser(pseudo: string) {
+    try {
+      const user = await this.UserModel.findOne({
+        temporaryPseudo: pseudo,
+      });
+      if (user) {
+        return user;
+      } else {
+        throw new Error('User not found');
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        throw new Error('An error occurred');
+      }
+      throw new Error('An unknown error occurred');
     }
-
-    public async getCodeInformationsInDatabase(code: number){
-        
-        try{
-
-            const codeInformations = await EmailCode.findOne<CodeInformations>({
-                value: code
-            })
-
-            if( codeInformations ){
-                
-                return codeInformations;
-
-            }else{
-                
-                throw new Error("Code non valide A")
-            }
-        
-            
-        }catch(err){
-            console.log(err)
-            throw new Error("Code non valide")
-        }
-    }
-
-    
-
-    public async removeCodeInformationsFromDatabase(uuid: string, value: number){
-        
-        try{
-            
-            await WebSite.deleteOne({
-                uuid,
-                value
-            });
-
-        }catch(err){
-            console.log(err)
-        }
-    }
-
-    public async getAvis(){
-        try{
-            const avis = await WebSite.find<WebSiteDatabaseType>({avisStatus: "done", avisChecked: true, avisValidated: true}).select(["entreprise", "firstName", "job", "avis", "avisStars"]);
-            return avis;
-            
-        }catch(err){
-            console.log(err)
-            throw new Error("Une erreur est survenue lors de la récupération des avis")
-        }
-    }
-
-   
-
-    public async setAvis(uuid: string, rating: number, message: string[]){
-        const query = {
-            uuid
-        }
-
-        const options = {
-            avisStars: rating,
-            avis: message,
-            avisStatus: "done"
-        }
-
-        await WebSite.findOneAndUpdate(query, options);
-    }
-
-    public async deleteAvisForm(uuid: string){
-        await WebSite.deleteOne({uuid});
-    }
-
-    public async getWebSite(uuid: string){
-        const webSite = await WebSite.findOne({uuid});
-        if(webSite){
-            return webSite
-        }else {
-            throw new Error("Une erreur est survenue.")
-        }
-    }*/
+  }
 }
 
 export default DatabaseMongoose;
