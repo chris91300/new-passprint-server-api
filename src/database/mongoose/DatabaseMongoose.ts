@@ -6,6 +6,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { WebSite } from '../schemas/WebSite.schema';
 import { Nonce } from '../schemas/Nonce.schema';
 import { User } from '../schemas/User.schema';
+import { Event } from '../schemas/Event.schema';
+import { EventType } from 'types/event';
 
 @Injectable()
 class DatabaseMongoose implements databaseInterface {
@@ -16,6 +18,8 @@ class DatabaseMongoose implements databaseInterface {
     private readonly NonceModel: Model<Nonce>,
     @InjectModel(User.name)
     private readonly UserModel: Model<User>,
+    @InjectModel(Event.name)
+    private readonly EventModel: Model<Event>,
   ) {}
 
   public async createWebSite(webSiteData: WebSiteDataType, authKey: string) {
@@ -86,6 +90,18 @@ class DatabaseMongoose implements databaseInterface {
       } else {
         throw new Error('User not found');
       }
+    } catch (err) {
+      if (err instanceof Error) {
+        throw new Error('An error occurred');
+      }
+      throw new Error('An unknown error occurred');
+    }
+  }
+
+  public async createEvent(event: EventType) {
+    try {
+      const eventDoc = await this.EventModel.create(event);
+      return eventDoc._id;
     } catch (err) {
       if (err instanceof Error) {
         throw new Error('An error occurred');

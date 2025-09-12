@@ -1,8 +1,6 @@
 import { HydratedDocument } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-export type EventDocument = HydratedDocument<Event>;
-
 @Schema()
 export class Event {
   @Prop({ required: true })
@@ -15,10 +13,10 @@ export class Event {
   hostname: string;
 
   @Prop({ required: true })
-  request: string; //   "signIn" | "signUp" | "update"
+  requestType: string; //   "signIn" | "signUp" | "update"
 
   @Prop()
-  userDataAsked: string; // string[] sérialisé
+  userDataAsked: string[]; // string[] sérialisé
 
   @Prop({ required: true })
   nonce: string;
@@ -27,4 +25,5 @@ export class Event {
   timestamp: number;
 }
 
+export type EventDocument = HydratedDocument<Event>;
 export const EventSchema = SchemaFactory.createForClass(Event);

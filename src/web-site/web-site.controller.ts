@@ -44,7 +44,7 @@ export class WebSiteController {
   }
 
   @Post('server')
-  request(
+  async request(
     @Ip() ip: string,
     @Body(new validationWebSiteRequestPipe(requestWebSiteDtoSchema))
     body: RequestWebSiteDtoType,
@@ -52,12 +52,17 @@ export class WebSiteController {
     console.log('ip : ', ip);
     console.log('body : ', body);
     try {
-      return 'ok';
+      const response = await this.webSiteService.checkRequestFromWebSite(body);
+      return response;
     } catch (err) {
+      const error = {
+        success: false,
+        message: 'An error occurred',
+      };
       if (err instanceof Error) {
-        return err.message;
+        error.message = err.message;
       }
-      return 'une erreur est survenue';
+      return error;
     }
   }
 }
