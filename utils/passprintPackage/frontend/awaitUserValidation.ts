@@ -1,5 +1,7 @@
 import WebSocket from 'ws';
 
+const AWAITING_TIMEOUT = 60000 * 2;
+
 export async function awaitUserValidation(
   url: string,
   eventID: string,
@@ -12,7 +14,7 @@ export async function awaitUserValidation(
     const timeout = setTimeout(() => {
       ws.close();
       reject(new Error('La connexion a expiré (timeout).'));
-    }, 60000); // 1 minute
+    }, AWAITING_TIMEOUT); // 1 minute
 
     // Fonction de nettoyage pour fermer la connexion et effacer le timeout
     const cleanup = () => {

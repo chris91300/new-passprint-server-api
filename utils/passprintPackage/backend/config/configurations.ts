@@ -27,11 +27,11 @@ export const config: ConfigType = {
     },
   },
   privateKeyFile: {
-    path: '/etc/passprint/',
+    path: `/home/${process.env.USER}/.passprint/keys/`,
     name: 'passprint_private_key.pem',
   },
   publicKeyFile: {
-    path: '/etc/passprint/',
+    path: `/home/${process.env.USER}/.passprint/keys/`,
     name: 'passprint_public_key.pem',
   },
 };

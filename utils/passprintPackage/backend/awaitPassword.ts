@@ -1,5 +1,5 @@
-import { awaitPayloadFromMessage } from './awaitPayloadFromMessage';
-import { decryptMessageFromSubscriber } from './decryptMessageFromSubscriber';
+import { awaitPayloadFromMessage } from './utils/awaitPayloadFromMessage';
+import { decryptMessageFromSubscriber } from './utils/decryptMessageFromSubscriber';
 
 export async function awaitPassword(eventID: string) {
   const payloadCrypted = await awaitPayloadFromMessage(eventID);
