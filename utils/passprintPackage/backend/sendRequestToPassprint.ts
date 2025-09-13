@@ -1,14 +1,14 @@
-import { getCurrentTimestamp } from './getCurrentTimestamp';
-import { getNonce } from './getNonce';
+import { getCurrentTimestamp } from './utils/getCurrentTimestamp';
+import { getNonce } from './utils/getNonce';
 import {
   dataForRequestSchema,
   DataForRequestType,
   ResponseFromPassprintType,
 } from './types';
-import { signDataWithPrivateKey } from './signDataWithPrivateKey';
-import { encryptDataWithPublicKey } from './encryptDataWithPublicKey';
-import { passprintPublicKey } from './passprintPublicKey';
-import { connexionPostPassprintAndSendPayload } from './connexionPostPassprintAndSendPayload';
+import { encryptDataWithPublicKey } from './utils/encryptDataWithPublicKey';
+import { passprintPublicKey } from './utils/passprintPublicKey';
+import { connexionPostPassprintAndSendPayload } from './utils/connexionPostPassprintAndSendPayload';
+import { signDataWithPrivateKey } from './utils/signDataWithPrivateKey';
 
 export async function sendRequestToPassprint(data: DataForRequestType) {
   //  Vérifications des données fournis par le site

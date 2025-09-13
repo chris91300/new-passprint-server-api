@@ -1,5 +1,5 @@
 import { readFile } from 'node:fs/promises';
-import { config } from './configurations';
+import { config } from '../config/configurations';
 
 export async function getPublicKey() {
   const pathToFile = config.publicKeyFile.path + config.publicKeyFile.name;

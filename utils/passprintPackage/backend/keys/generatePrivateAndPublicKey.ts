@@ -1,6 +1,6 @@
 import { generateKeyPair } from 'crypto';
 import { promisify } from 'util';
-import { config } from './configurations';
+import { config } from '../config/configurations';
 
 // Promisification de la fonction crypto.generateKeyPair pour une utilisation avec async/await.
 const generateKeyPairPromise = promisify(generateKeyPair);

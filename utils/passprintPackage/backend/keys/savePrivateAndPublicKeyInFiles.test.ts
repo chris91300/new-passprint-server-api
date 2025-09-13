@@ -1,7 +1,7 @@
 import { writeFile, chmod } from 'node:fs/promises';
 import { join } from 'node:path';
 import { savePrivateAndPublicKeyInFiles } from './savePrivateAndPublicKeyInFiles';
-import { config } from './configurations';
+import { config } from '../config/configurations';
 import { type KeyPair } from './generatePrivateAndPublicKey';
 
 // On simule (mock) le module 'node:fs/promises' pour ne pas écrire de vrais fichiers

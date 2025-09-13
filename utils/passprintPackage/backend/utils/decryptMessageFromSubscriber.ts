@@ -4,7 +4,7 @@ import { getPrivateKey } from './getPrivateKey';
 import {
   ResponseFromPassprintDecryptedType,
   ResponseFromPassprintType,
-} from './types';
+} from '../types';
 
 export async function decryptMessageFromSubscriber(cryptedMessage: string) {
   const responseParsed: ResponseFromPassprintType = JSON.parse(cryptedMessage);

@@ -1,5 +1,5 @@
 import { createSign } from 'crypto';
-import { getPrivateKey } from './getPrivateKey';
+import { getPrivateKey } from './utils/getPrivateKey';
 
 /**
  * Signs a string of data with the application's private key.
