@@ -6,8 +6,8 @@ import {
   type WebSiteDataType,
 } from './dto/create-web-site.dto';
 import {
-  requestWebSiteDtoSchema,
-  type RequestWebSiteDtoType,
+  bodyFromWebSiteSchema,
+  type BodyFromWebSiteType,
 } from './dto/request-web-site.dto';
 import { validationWebSiteRequestPipe } from './pipes/validationWebSiteRequestPipe';
 
@@ -46,13 +46,15 @@ export class WebSiteController {
   @Post('server')
   async request(
     @Ip() ip: string,
-    @Body(new validationWebSiteRequestPipe(requestWebSiteDtoSchema))
-    body: RequestWebSiteDtoType,
+    @Body(new validationWebSiteRequestPipe(bodyFromWebSiteSchema))
+    body: BodyFromWebSiteType,
   ) {
     console.log('ip : ', ip);
-    console.log('body : ', body);
+    // J'AI UN PROBLEME AVEC LA CLÉ PRIVÉ. JE PEUX PAS LA RÉCUP
+    //console.log('body : ', body);
     try {
       const response = await this.webSiteService.checkRequestFromWebSite(body);
+      console.log('response : ', response);
       return response;
     } catch (err) {
       const error = {

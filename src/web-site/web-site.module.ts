@@ -5,10 +5,18 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { WebSite, WebSiteSchema } from '../database/schemas/WebSite.schema';
 import DatabaseMongoose from 'src/database/mongoose/DatabaseMongoose';
 import { DATABASE_PROVIDER } from 'src/database/database.provider';
+import { Nonce, NonceSchema } from 'src/database/schemas/Nonce.schema';
+import { User, UserSchema } from 'src/database/schemas/User.schema';
+import { EventSchema } from 'src/database/schemas/Event.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: WebSite.name, schema: WebSiteSchema }]),
+    MongooseModule.forFeature([
+      { name: WebSite.name, schema: WebSiteSchema },
+      { name: Nonce.name, schema: NonceSchema },
+      { name: User.name, schema: UserSchema },
+      { name: Event.name, schema: EventSchema },
+    ]),
   ],
   controllers: [WebSiteController],
   providers: [

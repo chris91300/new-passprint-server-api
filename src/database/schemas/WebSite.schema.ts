@@ -1,8 +1,6 @@
 import { HydratedDocument } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-export type WebSiteDocument = HydratedDocument<WebSite>;
-
 @Schema()
 export class WebSite {
   @Prop({ required: true })
@@ -27,6 +25,7 @@ export class WebSite {
   createdAt: number;
 }
 
+export type WebSiteDocument = HydratedDocument<WebSite>;
 export const WebSiteSchema = SchemaFactory.createForClass(WebSite);
 /*
 const webSiteSchema = new Schema<WebSiteDatabaseType>({

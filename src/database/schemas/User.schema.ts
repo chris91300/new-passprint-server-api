@@ -27,36 +27,73 @@ accountBloked: boolean
 
 @Schema({ _id: false })
 export class UserInformations {
-  @Prop({ require: true })
+  @Prop({ required: true })
+  gender: 'Male' | 'Female' | 'Other';
+
+  @Prop({ required: true })
   firstName: string;
 
-  @Prop({ require: true })
+  @Prop({ required: true })
   lastName: string;
 
-  @Prop({ require: true })
+  @Prop({ required: true })
   email: string;
 
-  @Prop({ require: true })
+  @Prop({ required: true })
   phone: string;
 
-  @Prop({ require: true })
+  @Prop({ required: true })
   address: string;
 
-  @Prop({ require: true })
+  @Prop({ required: true })
   city: string;
 
-  @Prop({ require: true })
+  @Prop({ required: true })
   postalCode: string;
 
-  @Prop({ require: true })
+  @Prop({ required: true })
   country: string;
 
-  @Prop({ require: true })
+  @Prop({ required: true })
   dateOfBirthday: Date;
 }
 
+export type UserInformationsDocument = HydratedDocument<UserInformations>;
+export const UserInformationsSchema =
+  SchemaFactory.createForClass(UserInformations);
+
+@Schema({ _id: false })
+export class Device {
+  @Prop({ required: true })
+  pushToken: string;
+
+  @Prop({ required: true })
+  platform: string;
+
+  @Prop({ required: true })
+  systemVersion: string;
+
+  @Prop({ required: true })
+  name: string;
+
+  @Prop({ required: true })
+  passprintVersion: string;
+
+  @Prop({ required: true })
+  bundleID: string;
+
+  @Prop({ required: true })
+  screenSize: string;
+}
+
+export type DeviceDocument = HydratedDocument<Device>;
+export const DeviceSchema = SchemaFactory.createForClass(Device);
+
+// Définition de vos clés possibles pour UserInformations
+export type UserInformationsKeys = keyof UserInformations;
+
 @Schema({ _id: false }) // Important pour les sous-documents
-export class WebSite {
+class WebSite {
   @Prop({ required: true })
   hostname: string;
 
@@ -78,12 +115,15 @@ export class WebSite {
   @Prop({ default: false })
   isSiteBlocked: boolean;
 
-  @Prop({ require: false })
+  @Prop({ required: false })
   passwordModifiedAt: Date;
 
-  @Prop({ require: true })
-  dataAskedBySite: keyof UserInformations[];
+  @Prop({ required: true, type: [String] })
+  dataAskedBySite: Array<UserInformationsKeys>;
 }
+
+export type WebSiteDocument = HydratedDocument<WebSite>;
+export const WebSiteSchema = SchemaFactory.createForClass(WebSite);
 
 @Schema()
 export class User {
@@ -91,16 +131,22 @@ export class User {
   pseudo: string;
 
   @Prop({ required: true })
+  userID: string; // UUID généré lors de la création du user et hasher
+
+  /* @Prop({ required: true })
   phoneKey: string;
 
   @Prop({ required: true })
-  phoneAuthKey: string;
+  phoneAuthKey: string;*/
 
-  @Prop({ required: true })
-  informations: UserInformations;
+  @Prop({ required: true, type: Map, of: DeviceSchema })
+  device: Map<string, DeviceDocument>;
 
-  @Prop({ required: true, type: Map, of: WebSite })
-  webSites: Map<string, WebSite>;
+  @Prop({ required: true, type: UserInformationsSchema })
+  informations: UserInformationsDocument;
+
+  @Prop({ required: true, type: Map, of: WebSiteSchema })
+  webSites: Map<string, WebSiteDocument>;
 
   @Prop({ required: true, default: false })
   accountBlocked: boolean;

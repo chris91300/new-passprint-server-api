@@ -15,7 +15,9 @@ const requestType = z.enum(['signUp', 'signIn', 'update'], {
   error: "Invalid requestType. Must be 'signUp' ou 'signIn' ou 'update'",
 });
 
-const userDataAsked = z.array(z.string(), { error: 'Invalid userDataAsked' });
+const userDataAsked = z
+  .array(z.string(), { error: 'Invalid userDataAsked' })
+  .optional();
 
 export const dataForRequestSchema = z.object({
   hostname,
@@ -26,6 +28,12 @@ export const dataForRequestSchema = z.object({
 });
 
 export type DataForRequestType = z.infer<typeof dataForRequestSchema>;
+
+export type PayloadDecryptedFromWebSiteType = DataForRequestType & {
+  timestamp: number;
+  nonce: string;
+  signature: string;
+};
 
 type ResponseFromPassprintSuccedType = {
   success: true;
@@ -49,3 +57,31 @@ export type ResponseFromPassprintDecryptedType = {
   nonce: string;
   signature: string;
 };
+
+export type UserDataFromMessengerType = {
+  pseudo: string;
+  userData?: string[];
+  password: string;
+  requestType: 'signUp' | 'signIn' | 'update';
+  signature: string;
+};
+
+// Structure attendue du payload chiffré
+export interface HybridEncryptedPayload {
+  iv: string;
+  authTag: string;
+  encryptedKey: string;
+  encryptedData: string;
+}
+
+export interface DataFromMessengerType {
+  type: string;
+  pattern: string | null;
+  channel: string;
+  message: string;
+}
+
+export type HybridEncryptedPayloadWithKeyString = Omit<
+  HybridEncryptedPayload,
+  'encryptedKey'
+> & { symmetricKey: Buffer<ArrayBufferLike> };

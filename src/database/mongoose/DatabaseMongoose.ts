@@ -91,8 +91,9 @@ class DatabaseMongoose implements databaseInterface {
         throw new Error('User not found');
       }
     } catch (err) {
+      console.log(err);
       if (err instanceof Error) {
-        throw new Error('An error occurred');
+        throw new Error('An error occurred: ' + err.message);
       }
       throw new Error('An unknown error occurred');
     }
