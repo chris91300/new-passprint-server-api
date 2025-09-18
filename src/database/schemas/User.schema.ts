@@ -133,6 +133,8 @@ export class User {
   @Prop({ required: true })
   userID: string; // UUID généré lors de la création du user et hasher
 
+  @Prop({ required: true })
+  publicKey: string;
   /* @Prop({ required: true })
   phoneKey: string;
 
@@ -140,12 +142,12 @@ export class User {
   phoneAuthKey: string;*/
 
   @Prop({ required: true, type: Map, of: DeviceSchema })
-  device: Map<string, DeviceDocument>;
+  devices: Map<string, DeviceDocument>;
 
   @Prop({ required: true, type: UserInformationsSchema })
   informations: UserInformationsDocument;
 
-  @Prop({ required: true, type: Map, of: WebSiteSchema })
+  @Prop({ required: true, type: Map, of: WebSiteSchema, default: {} })
   webSites: Map<string, WebSiteDocument>;
 
   @Prop({ required: true, default: false })

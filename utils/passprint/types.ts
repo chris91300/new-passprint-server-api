@@ -66,13 +66,16 @@ export type UserDataFromMessengerType = {
   signature: string;
 };
 
+export const hybridEncryptedPayloadSchema = z.object({
+  iv: z.string(),
+  authTag: z.string(),
+  encryptedKey: z.string(),
+  encryptedData: z.string(),
+});
 // Structure attendue du payload chiffré
-export interface HybridEncryptedPayload {
-  iv: string;
-  authTag: string;
-  encryptedKey: string;
-  encryptedData: string;
-}
+export type HybridEncryptedPayload = z.infer<
+  typeof hybridEncryptedPayloadSchema
+>;
 
 export interface DataFromMessengerType {
   type: string;
