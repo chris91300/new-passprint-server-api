@@ -5,11 +5,11 @@ import {
   webSiteDataSchema,
   type WebSiteDataType,
 } from './dto/create-web-site.dto';
+import { validationHybridEncryptedPayloadPipe } from 'src/pipes/validationHybridEncryptedPayloadPipe';
 import {
-  bodyFromWebSiteSchema,
-  type BodyFromWebSiteType,
-} from './dto/request-web-site.dto';
-import { validationWebSiteRequestPipe } from './pipes/validationWebSiteRequestPipe';
+  type HybridEncryptedPayload,
+  hybridEncryptedPayloadSchema,
+} from 'utils/passprint/types';
 
 @Controller('web-site')
 export class WebSiteController {
@@ -46,8 +46,10 @@ export class WebSiteController {
   @Post('server')
   async request(
     @Ip() ip: string,
-    @Body(new validationWebSiteRequestPipe(bodyFromWebSiteSchema))
-    body: BodyFromWebSiteType,
+    @Body(
+      new validationHybridEncryptedPayloadPipe(hybridEncryptedPayloadSchema),
+    )
+    body: HybridEncryptedPayload,
   ) {
     console.log('ip : ', ip);
     // J'AI UN PROBLEME AVEC LA CLÉ PRIVÉ. JE PEUX PAS LA RÉCUP
