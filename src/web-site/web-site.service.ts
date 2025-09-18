@@ -1,26 +1,28 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ownPublicKey } from 'configurations/ownPublicKey';
 import { DATABASE_PROVIDER } from 'src/database/database.provider';
 import { type databaseInterface } from 'src/database/interfaces/database.interface';
-import {
-  WebSiteDataType,
-  webSiteRequestSchema,
-  WebSiteRequestType,
-} from 'types/webSite';
+import { type WebSiteDataType, webSiteRequestSchema } from 'types/webSite';
 import { generateAuthKey } from 'utils/generateAuthKey';
-import { nonceIsOverwhelmed } from 'utils/nonceIsStillValid';
-import { checkSignature } from 'utils/passprintPackage/backend/utils/checkSignature';
-import { decryptDataWithPrivateKey } from 'utils/passprintPackage/backend/utils/decryptDataWithPrivateKey';
-import { getPrivateKey } from 'utils/passprintPackage/backend/utils/getPrivateKey';
+import { ConfigService } from '@nestjs/config';
+import { BodyFromWebSiteType } from './dto/request-web-site.dto';
+import { PassprintService } from 'utils/passprint/Passprint';
 
 @Injectable()
 export class WebSiteService {
   constructor(
+    private readonly configService: ConfigService,
     @Inject(DATABASE_PROVIDER)
     private readonly database: databaseInterface,
-    private readonly passprintPublicKey: string,
-  ) {
-    this.passprintPublicKey = ownPublicKey;
+  ) {}
+
+  getPublicKey(): string {
+    const PASSPRINT_PUBLIC_KEY =
+      this.configService.get<string>('passprintPublicKey');
+    if (!PASSPRINT_PUBLIC_KEY) {
+      throw new Error('PASSPRINT_PUBLIC_KEY is not defined');
+    }
+
+    return PASSPRINT_PUBLIC_KEY;
   }
 
   async create(data: WebSiteDataType) {
@@ -29,39 +31,74 @@ export class WebSiteService {
     return {
       success: true,
       authKey,
-      publickey: this.passprintPublicKey,
+      publickey: this.getPublicKey(),
     };
   }
 
-  async checkRequestFromWebSite(request: string) {
+  async checkRequestFromWebSite(request: BodyFromWebSiteType) {
     try {
-      //  récupération de la clé privé
+      /*//  récupération de la clé privé
       const passprintPrivateKey = await getPrivateKey();
       // déchiffrement de la request
-      const requestDecrypted =
+      /*const requestDecrypted =
         await decryptDataWithPrivateKey<WebSiteRequestType>(
           request,
           passprintPrivateKey,
-        );
+        );*/
+      /*const decryptedHybridEncryptedData = await decryptHybridEncryptedData(
+        request,
+        passprintPrivateKey,
+        'secret',
+      );
+
+      const requestDecrypted =
+        await decryptDataWithPrivateKey<WebSiteRequestType>(
+          decryptedHybridEncryptedData,
+          passprintPrivateKey,
+        );*/
+
+      const requestDecrypted =
+        await PassprintService.decryptRequestFromWebSite(request);
+
       //  vérification des données du payload déchiffré
       webSiteRequestSchema.parse(requestDecrypted);
 
+      //  on vérifie que la requete n'est pas ancienne
+      const currentTimestamp = Date.now();
+      const toleranceInMilliseconds = 5000; // Par exemple, 5 secondes de tolérance
+      // Vérification si le timestamp est trop vieux (plus ancien que le serveur actuel - tolérance)
+      if (
+        requestDecrypted.timestamp <
+        currentTimestamp - toleranceInMilliseconds
+      ) {
+        console.error('Requête refusée : Timestamp trop ancien.');
+        throw new Error('Requête refusée car trop ancienne.');
+      }
+
+      // Vérification si le timestamp est trop jeune (plus récent que le serveur actuel + tolérance)
+      if (
+        requestDecrypted.timestamp >
+        currentTimestamp + toleranceInMilliseconds
+      ) {
+        console.error('Requête refusée : Timestamp trop jeune.');
+        throw new Error('Requête refusée car le timestamp est trop jeune.');
+      }
       //  vérification du nonce et timestamp
       const nonceDocument = await this.database.checkIfNonceAlreadyExist(
         requestDecrypted.nonce,
         requestDecrypted.timestamp,
       );
-      if (!nonceDocument) {
+      if (nonceDocument) {
         throw new Error('nonce already use');
       }
 
-      if (nonceIsOverwhelmed(nonceDocument)) {
+      /*if (nonceIsOverwhelmed(nonceDocument)) {
         await this.database.removeNonce(
           requestDecrypted.nonce,
           requestDecrypted.timestamp,
         );
         throw new Error('nonce is overwhelmed');
-      }
+      }*/
 
       await this.database.saveNonce(
         requestDecrypted.nonce,
@@ -77,7 +114,7 @@ export class WebSiteService {
       const { signature, ...payloadWithoutSignature } = requestDecrypted;
 
       // vérifier la signature avec la clé public et les données récupérer
-      const isSignatureValid = checkSignature(
+      const isSignatureValid = PassprintService.checkSignature(
         signature,
         webSite.publicKey,
         JSON.stringify(payloadWithoutSignature),
@@ -89,6 +126,7 @@ export class WebSiteService {
 
       //  vérifier que l'utilisateur n'a pas bloqué le site
       const user = await this.database.getUser(requestDecrypted.pseudo);
+
       if (user.accountBlocked) {
         throw new Error('user is blocked');
       }

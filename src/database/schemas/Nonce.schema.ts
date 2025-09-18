@@ -7,7 +7,6 @@ const getExpirationTime = () => {
   const expireTime = currentTime + twoMinutes;
   return expireTime;
 };
-export type NonceDocument = HydratedDocument<Nonce>;
 
 @Schema()
 export class Nonce {
@@ -21,4 +20,5 @@ export class Nonce {
   expiredAt: number;
 }
 
+export type NonceDocument = HydratedDocument<Nonce>;
 export const NonceSchema = SchemaFactory.createForClass(Nonce);

@@ -1,14 +1,16 @@
 import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
 import { ZodError, ZodType } from 'zod';
-import { WebSiteDatabaseType } from '../dto/create-web-site.dto';
 import { getZodErrorMessages } from 'utils/getZodErrorMesages';
+import { type BodyFromWebSiteType } from '../dto/request-web-site.dto';
 
 @Injectable()
 export class validationWebSitedataPipe implements PipeTransform {
   constructor(private schema: ZodType) {}
 
-  transform(value: WebSiteDatabaseType) {
+  transform(value: BodyFromWebSiteType) {
     try {
+      console.log('dans le pipe du body');
+      console.log(value);
       this.schema.parse(value);
       return value;
     } catch (error) {
