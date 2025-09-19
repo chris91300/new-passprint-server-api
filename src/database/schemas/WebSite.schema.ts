@@ -27,27 +27,3 @@ export class WebSite {
 
 export type WebSiteDocument = HydratedDocument<WebSite>;
 export const WebSiteSchema = SchemaFactory.createForClass(WebSite);
-/*
-const webSiteSchema = new Schema<WebSiteDatabaseType>({
-  hostname: { type: String, require: true },
-  contactFirstName: { type: String, require: true },
-  contactLastName: { type: String, require: true },
-  contactEmail: { type: String, require: true },
-  publicKey: { type: String, require: true },
-  
-  authKey: { type: String, require: true },
-  createdAt: { type: Number, default: Date.now },
-});
-
-const WebSite =
-  mongoose.models.WebSite ||
-  model<WebSiteDatabaseType>('WebSite', webSiteSchema);
-
-export default WebSite;*/
-
-/**
- * pour plus tard
- * 
- * /*ipv4: { type: String, default: '' },
-  ipv6: { type: String, default: '' },
- */
