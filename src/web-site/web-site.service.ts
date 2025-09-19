@@ -92,14 +92,6 @@ export class WebSiteService {
         throw new Error('nonce already use');
       }
 
-      /*if (nonceIsOverwhelmed(nonceDocument)) {
-        await this.database.removeNonce(
-          requestDecrypted.nonce,
-          requestDecrypted.timestamp,
-        );
-        throw new Error('nonce is overwhelmed');
-      }*/
-
       await this.database.saveNonce(
         requestDecrypted.nonce,
         requestDecrypted.timestamp,

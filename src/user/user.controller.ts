@@ -83,26 +83,7 @@ export class UserController {
     }
   }
 
-  /*    A METTRE DANS UN CONTROLLER EVENT
-  @Post('get-events')
-  getEvents(
-    @Body(
-      new validationHybridEncryptedPayloadPipe(hybridEncryptedPayloadSchema),
-    )
-    body: HybridEncryptedPayload,
-  ) {
-    try {
-      hybridEncryptedPayloadSchema.parse(body);
-      return { success: true, message: 'Payload is valid' };
-    } catch (err) {
-      if (err instanceof Error) {
-        return { success: false, message: err.message };
-      } else {
-        return { success: false, message: 'Une erreur est survenue.' };
-      }
-    }
-  }
-
+  //  je préfère le mettre ici car c'est l'utilisateur qui valide.
   @Post('valid-Events')
   validEvents(
     @Body(
@@ -120,5 +101,5 @@ export class UserController {
         return { success: false, message: 'Une erreur est survenue.' };
       }
     }
-  }*/
+  }
 }

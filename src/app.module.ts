@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ownPublicKey } from 'configurations/ownPublicKey';
 import { UserController } from './user/user.controller';
 import { UserService } from './user/user.service';
+import { EventModule } from './event/event.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { UserService } from './user/user.service';
     }),
     MongooseModule.forRoot(process.env.MONGODB_URL!),
     WebSiteModule,
+    EventModule,
   ],
   controllers: [UserController],
   providers: [UserService],
