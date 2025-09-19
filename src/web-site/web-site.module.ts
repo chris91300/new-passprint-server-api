@@ -3,32 +3,18 @@ import { WebSiteController } from './web-site.controller';
 import { WebSiteService } from './web-site.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { WebSite, WebSiteSchema } from '../database/schemas/WebSite.schema';
-import DatabaseMongoose from 'src/database/mongoose/DatabaseMongoose';
-import { DATABASE_PROVIDER } from 'src/database/database.provider';
-import { Nonce, NonceSchema } from 'src/database/schemas/Nonce.schema';
-import { User, UserSchema } from 'src/database/schemas/User.schema';
-import { EventSchema } from 'src/database/schemas/Event.schema';
+import { NonceModule } from 'src/nonce/nonce.module';
+import { EventModule } from 'src/event/event.module';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      { name: WebSite.name, schema: WebSiteSchema },
-      { name: Nonce.name, schema: NonceSchema },
-      { name: User.name, schema: UserSchema },
-      { name: Event.name, schema: EventSchema },
-    ]),
+    MongooseModule.forFeature([{ name: WebSite.name, schema: WebSiteSchema }]),
+    NonceModule,
+    EventModule,
+    UserModule,
   ],
   controllers: [WebSiteController],
-  providers: [
-    WebSiteService,
-    {
-      provide: DATABASE_PROVIDER,
-      /*  si on veut changer de base de donnée, on créer une nouvelle class 
-          qui implemente DatabaseInterface et on remplace DatabaseMongoose par
-          la nouvelle
-      */
-      useClass: DatabaseMongoose,
-    },
-  ],
+  providers: [WebSiteService],
 })
 export class WebSiteModule {}

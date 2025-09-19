@@ -1,34 +1,10 @@
 import { HydratedDocument } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-/**
- * USER DATABASE
-
-pseudo
-key smartphone
-key authentification smartphone
-nom, prénom ...
-
-password {
-hostname : {
-authKey: string,
-publicKey: string,
-passwordCrypted with public key of site externe: string,
-date d'inscription: Date,
-date de dernière demande,
-site_bloqué: boolean
-passwordModifiedAt; Date (dernière modif),
-dataAskedBySite: [nom, prénom ...]
-}
-
-accountBloked: boolean  
-
- */
-
 @Schema({ _id: false })
 export class UserInformations {
   @Prop({ required: true })
-  gender: 'Male' | 'Female' | 'Other';
+  gender: string; //'Male' | 'Female' | 'Other';
 
   @Prop({ required: true })
   firstName: string;
@@ -100,7 +76,7 @@ class WebSite {
   @Prop({ required: true })
   publicKey: string;
 
-  @Prop({ require: true })
+  @Prop({ required: true })
   userPseudo: string;
 
   @Prop({ required: true })
@@ -135,11 +111,6 @@ export class User {
 
   @Prop({ required: true })
   publicKey: string;
-  /* @Prop({ required: true })
-  phoneKey: string;
-
-  @Prop({ required: true })
-  phoneAuthKey: string;*/
 
   @Prop({ required: true, type: Map, of: DeviceSchema })
   devices: Map<string, DeviceDocument>;
@@ -157,7 +128,7 @@ export class User {
   useTemporaryPseudo: boolean;
 
   @Prop()
-  temporaryPseudoExpireAt: number;
+  temporaryPseudoExpireAt: Date;
 
   @Prop({ required: true }) // mettre lors de la création la valeur pseudo
   temporaryPseudo: string;
