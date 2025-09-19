@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { EventModule } from './event/event.module';
 //import { NonceModule } from './nonce/nonce.module';
 import { UserModule } from './user/user.module';
+import { CryptoModule } from './crypto/crypto.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { UserModule } from './user/user.module';
     EventModule,
     // NonceModule,
     UserModule,
+    CryptoModule,
   ],
   controllers: [],
   providers: [],

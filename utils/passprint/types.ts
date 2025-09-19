@@ -29,11 +29,17 @@ export const dataForRequestSchema = z.object({
 
 export type DataForRequestType = z.infer<typeof dataForRequestSchema>;
 
-export type PayloadDecryptedFromWebSiteType = DataForRequestType & {
+export type PayloadWithNonce = {
   timestamp: number;
   nonce: string;
+};
+
+export type Signed = {
   signature: string;
 };
+export type PayloadDecryptedFromWebSiteType = DataForRequestType &
+  PayloadWithNonce &
+  Signed;
 
 type ResponseFromPassprintSuccedType = {
   success: true;
@@ -49,21 +55,18 @@ export type ResponseFromPassprintType =
   | ResponseFromPassprintSuccedType
   | ResponseFromPassprintFailedType;
 
-export type ResponseFromPassprintDecryptedType = {
-  pseudo: string;
-  password: string;
-  userData?: string[];
-  timestamp: number;
-  nonce: string;
-  signature: string;
-};
+export type ResponseFromPassprintDecryptedType = PayloadWithNonce &
+  Signed & {
+    pseudo: string;
+    password: string;
+    userData?: string[];
+  };
 
-export type UserDataFromMessengerType = {
+export type UserDataFromMessengerType = Signed & {
   pseudo: string;
   userData?: string[];
   password: string;
   requestType: 'signUp' | 'signIn' | 'update';
-  signature: string;
 };
 
 export const hybridEncryptedPayloadSchema = z.object({
@@ -88,3 +91,5 @@ export type HybridEncryptedPayloadWithKeyString = Omit<
   HybridEncryptedPayload,
   'encryptedKey'
 > & { symmetricKey: Buffer<ArrayBufferLike> };
+
+export type Method = 'POST' | 'PATCHs';
