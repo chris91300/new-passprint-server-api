@@ -13,6 +13,7 @@ export class NonceService {
     try {
       const nonceDocument = new this.NonceModel({ nonce, timestamp });
       await nonceDocument.save();
+      console.log('nonce saved');
     } catch (err) {
       console.log(err);
     }

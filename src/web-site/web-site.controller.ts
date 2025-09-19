@@ -52,8 +52,7 @@ export class WebSiteController {
     body: HybridEncryptedPayload,
   ) {
     console.log('ip : ', ip);
-    // J'AI UN PROBLEME AVEC LA CLÉ PRIVÉ. JE PEUX PAS LA RÉCUP
-    //console.log('body : ', body);
+
     try {
       const response = await this.webSiteService.checkRequestFromWebSite(body);
       console.log('response : ', response);

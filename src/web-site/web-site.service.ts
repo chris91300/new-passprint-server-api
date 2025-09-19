@@ -50,34 +50,6 @@ export class WebSiteService {
       webSiteRequestSchema.parse(requestDecrypted);
       this.NonceService.isValid(requestDecrypted.timestamp);
 
-      //  on vérifie que la requete n'est pas ancienne
-      /* const currentTimestamp = Date.now();
-      const toleranceInMilliseconds = 5000; // Par exemple, 5 secondes de tolérance
-      // Vérification si le timestamp est trop vieux (plus ancien que le serveur actuel - tolérance)
-      if (
-        requestDecrypted.timestamp <
-        currentTimestamp - toleranceInMilliseconds
-      ) {
-        console.error('Requête refusée : Timestamp trop ancien.');
-        throw new Error('Requête refusée car trop ancienne.');
-      }
-
-      // Vérification si le timestamp est trop jeune (plus récent que le serveur actuel + tolérance)
-      if (
-        requestDecrypted.timestamp >
-        currentTimestamp + toleranceInMilliseconds
-      ) {
-        console.error('Requête refusée : Timestamp trop jeune.');
-        throw new Error('Requête refusée car le timestamp est trop jeune.');
-      }*/
-      //  vérification du nonce et timestamp
-      /*const nonceDocument = await this.database.checkIfNonceAlreadyExist(
-        requestDecrypted.nonce,
-        requestDecrypted.timestamp,
-      );
-      if (nonceDocument) {
-        throw new Error('nonce already use');
-      }*/
       await this.NonceService.alreadyExist(
         requestDecrypted.nonce,
         requestDecrypted.timestamp,
@@ -88,11 +60,6 @@ export class WebSiteService {
         requestDecrypted.timestamp,
       );
 
-      //  récupérer clé public du site avec hostname et authKey
-      /*onst webSite = await this.database.getWebSite(
-        requestDecrypted.hostname,
-        requestDecrypted.authKey,
-      );*/
       const webSite = await this.WebSiteModel.findOne({
         hostname: requestDecrypted.hostname,
         authKey: requestDecrypted.authKey,
@@ -104,7 +71,14 @@ export class WebSiteService {
       const { signature, ...payloadWithoutSignature } = requestDecrypted;
 
       // vérifier la signature avec la clé public et les données récupérer
-      const isSignatureValid = PassprintService.checkSignature(
+      // passprint est modifié. il faut une methode qui gère le decrypt et la signature
+      // ATTENTION: PAS POSSIBLE CAR J'AI BESOIN DE LA CLÉ PUBLIC DU SITE
+      /**
+       * A VOIR
+       * la clé public peut etre envoyer avec la requete. pas besoin de la demander lors de l'inscription
+       * surtout qu'elle est générer lorsque le serveur est lancé.
+       */
+      const isSignatureValid = PassprintService.checkSignatureFromWebSite(
         signature,
         webSite.publicKey,
         JSON.stringify(payloadWithoutSignature),
