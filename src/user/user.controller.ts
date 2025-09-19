@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Patch, Post } from '@nestjs/common';
 import { validationHybridEncryptedPayloadPipe } from 'src/pipes/validationHybridEncryptedPayloadPipe';
 import {
   type HybridEncryptedPayload,
@@ -26,6 +26,64 @@ export class UserController {
     }
   }
 
+  @Patch()
+  update(
+    @Body(
+      new validationHybridEncryptedPayloadPipe(hybridEncryptedPayloadSchema),
+    )
+    body: HybridEncryptedPayload,
+  ) {
+    try {
+      hybridEncryptedPayloadSchema.parse(body);
+      return { success: true, message: 'Payload is valid' };
+    } catch (err) {
+      if (err instanceof Error) {
+        return { success: false, message: err.message };
+      } else {
+        return { success: false, message: 'Une erreur est survenue.' };
+      }
+    }
+  }
+
+  @Post('add-device')
+  setDevice(
+    @Body(
+      new validationHybridEncryptedPayloadPipe(hybridEncryptedPayloadSchema),
+    )
+    body: HybridEncryptedPayload,
+  ) {
+    try {
+      hybridEncryptedPayloadSchema.parse(body);
+      return { success: true, message: 'Payload is valid' };
+    } catch (err) {
+      if (err instanceof Error) {
+        return { success: false, message: err.message };
+      } else {
+        return { success: false, message: 'Une erreur est survenue.' };
+      }
+    }
+  }
+
+  @Post('add-web-site')
+  setWebSite(
+    @Body(
+      new validationHybridEncryptedPayloadPipe(hybridEncryptedPayloadSchema),
+    )
+    body: HybridEncryptedPayload,
+  ) {
+    try {
+      hybridEncryptedPayloadSchema.parse(body);
+      return { success: true, message: 'Payload is valid' };
+    } catch (err) {
+      if (err instanceof Error) {
+        return { success: false, message: err.message };
+      } else {
+        return { success: false, message: 'Une erreur est survenue.' };
+      }
+    }
+  }
+
+  /*    A METTRE DANS UN CONTROLLER EVENT
   @Post('get-events')
   getEvents(
     @Body(
@@ -62,5 +120,5 @@ export class UserController {
         return { success: false, message: 'Une erreur est survenue.' };
       }
     }
-  }
+  }*/
 }

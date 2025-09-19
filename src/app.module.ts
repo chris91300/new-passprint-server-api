@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { ownPublicKey } from 'configurations/ownPublicKey';
 import { UserController } from './user/user.controller';
+import { UserService } from './user/user.service';
 
 @Module({
   imports: [
@@ -19,5 +20,6 @@ import { UserController } from './user/user.controller';
     WebSiteModule,
   ],
   controllers: [UserController],
+  providers: [UserService],
 })
 export class AppModule {}
