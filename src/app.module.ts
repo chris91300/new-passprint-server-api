@@ -6,6 +6,9 @@ import { ownPublicKey } from 'configurations/ownPublicKey';
 import { UserController } from './user/user.controller';
 import { UserService } from './user/user.service';
 import { EventModule } from './event/event.module';
+import { NonceController } from './nonce/nonce.controller';
+import { NonceService } from './nonce/nonce.service';
+import { NonceModule } from './nonce/nonce.module';
 
 @Module({
   imports: [
@@ -20,8 +23,9 @@ import { EventModule } from './event/event.module';
     MongooseModule.forRoot(process.env.MONGODB_URL!),
     WebSiteModule,
     EventModule,
+    NonceModule,
   ],
-  controllers: [UserController],
-  providers: [UserService],
+  controllers: [UserController, NonceController],
+  providers: [UserService, NonceService],
 })
 export class AppModule {}
